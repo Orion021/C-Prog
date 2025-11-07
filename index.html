@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>C Programming — Notes Hub</title>
+  <meta name="description" content="Index page linking to topic-wise C programming notes (each topic in /res folder)." />
+  <!-- Simple, self-contained styling so this index.html works without external files -->
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1724;
+      --muted:#98a1b3;
+      --accent:#60a5fa;
+      --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+      --gap:18px;
+      --max-width:1100px;
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(800px 300px at 10% 10%, rgba(96,165,250,0.06), transparent 8%),
+        radial-gradient(600px 240px at 90% 90%, rgba(99,102,241,0.04), transparent 10%),
+        var(--bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--max-width);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.012));
+      border-radius:20px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      padding:28px;
+      backdrop-filter: blur(6px) saturate(1.05);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+
+    .logo{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      background: linear-gradient(135deg,var(--accent), #7c3aed);
+      color:white;
+      box-shadow: 0 6px 18px rgba(96,165,250,0.12), inset 0 -4px 12px rgba(255,255,255,0.02);
+    }
+
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:0.2px;
+    }
+    p.lead{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    input[type="search"]{
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.03);
+      color: #e6eef8;
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+      min-width:220px;
+      font-size:14px;
+      box-shadow: 0 2px 8px rgba(2,6,23,0.5);
+    }
+    .btn{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      padding:9px 12px;
+      border-radius:10px;
+      color:var(--muted);
+      font-size:13px;
+      cursor:pointer;
+    }
+
+    main{
+      margin-top:18px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+      gap:var(--gap);
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));
+      border-radius:12px;
+      padding:14px;
+      min-height:110px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border:1px solid rgba(255,255,255,0.02);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover{ transform: translateY(-6px); box-shadow: 0 10px 30px rgba(2,6,23,0.6); }
+
+    .card h3{
+      margin:0;
+      font-size:15px;
+    }
+    .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.25; }
+
+    .meta{
+      margin-top:auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    footer{
+      margin-top:20px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* small screens */
+    @media (max-width:520px){
+      .brand h1{ font-size:16px; }
+      input[type="search"]{ min-width:140px; }
+      .grid{ grid-template-columns:1fr; }
+    }
+
+    /* subtle focus */
+    input[type="search"]:focus{ box-shadow: 0 6px 20px rgba(96,165,250,0.08); border-color: rgba(96,165,250,0.22); }
+    a.topic-link{ text-decoration:none; color:inherit; display:block; height:100%; }
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div class="brand" aria-hidden="false">
+        <div class="logo">C</div>
+        <div>
+          <h1>C Programming — Notes Hub</h1>
+          <p class="lead">Topic-wise study notes with definitions, explanations and complete example code. Each topic file lives inside <code>/res</code>.</p>
+        </div>
+      </div>
+
+      <div class="controls" aria-hidden="false">
+        <label for="q" class="sr-only" style="position:absolute;left:-9999px;">Search topics</label>
+        <input id="q" type="search" placeholder="Search topics (try: pointers, arrays, file)" aria-label="Search topics" />
+        <button id="show-all" class="btn" title="Show all topics">Show all</button>
+      </div>
+    </header>
+
+    <main>
+      <section aria-label="Topics list">
+        <div id="grid" class="grid">
+          <!-- Each card links to a topic file inside /res. Filenames are simple slugs. -->
+          
+          <article class="card" data-tags="intro,basics,hello">
+            <a class="topic-link" href="res/introduction-to-c.html">
+              <h3>Introduction to C</h3>
+              <p>History, characteristics, when to use C and setting up toolchain (compiler & editor).</p>
+              <div class="meta"><span>res/introduction-to-c.html</span><span>Basics</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="structure,program,compilation">
+            <a class="topic-link" href="res/structure-of-a-c-program.html">
+              <h3>Structure of a C Program</h3>
+              <p>File layout, headers, main(), compilation steps (preprocess → compile → link).</p>
+              <div class="meta"><span>res/structure-of-a-c-program.html</span><span>Basics</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="variables,types,const">
+            <a class="topic-link" href="res/variables-and-constants.html">
+              <h3>Variables & Constants</h3>
+              <p>Declaration, initialization, const keyword, literal types and naming conventions.</p>
+              <div class="meta"><span>res/variables-and-constants.html</span><span>Basics</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="datatypes,int,float,char">
+            <a class="topic-link" href="res/data-types.html">
+              <h3>Data Types</h3>
+              <p>Primitive types, sizes, signed vs unsigned, float/double and sizeof operator.</p>
+              <div class="meta"><span>res/data-types.html</span><span>Basics</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="io,printf,scanf">
+            <a class="topic-link" href="res/input-output.html">
+              <h3>Input & Output (printf/scanf)</h3>
+              <p>Format specifiers, common pitfalls, safe alternatives and examples.</p>
+              <div class="meta"><span>res/input-output.html</span><span>Basics</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="operators,expressions,precedence">
+            <a class="topic-link" href="res/operators-and-expressions.html">
+              <h3>Operators & Expressions</h3>
+              <p>Arithmetic, logical, bitwise, assignment, ternary, precedence and type conversion.</p>
+              <div class="meta"><span>res/operators-and-expressions.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="control,if,switch,loops">
+            <a class="topic-link" href="res/control-statements.html">
+              <h3>Control Statements</h3>
+              <p>If/else, switch, for/while/do-while, break, continue and goto (use sparingly).</p>
+              <div class="meta"><span>res/control-statements.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="functions,recursion,scope">
+            <a class="topic-link" href="res/functions.html">
+              <h3>Functions</h3>
+              <p>Declaration, definition, call, parameters, return values, recursion and storage classes.</p>
+              <div class="meta"><span>res/functions.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="arrays,strings,1d,2d">
+            <a class="topic-link" href="res/arrays-and-strings.html">
+              <h3>Arrays & Strings</h3>
+              <p>One & multi-dimensional arrays, C-strings, common string functions and pitfalls.</p>
+              <div class="meta"><span>res/arrays-and-strings.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="pointers,memory,addresses">
+            <a class="topic-link" href="res/pointers.html">
+              <h3>Pointers</h3>
+              <p>Pointer basics, arithmetic, arrays & pointers, pointer to pointer, and common patterns.</p>
+              <div class="meta"><span>res/pointers.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="dynamic,malloc,free">
+            <a class="topic-link" href="res/dynamic-memory-allocation.html">
+              <h3>Dynamic Memory Allocation</h3>
+              <p>malloc, calloc, realloc, free and best practices to avoid leaks and errors.</p>
+              <div class="meta"><span>res/dynamic-memory-allocation.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="struct,union,typedef">
+            <a class="topic-link" href="res/structures-and-unions.html">
+              <h3>Structures & Unions</h3>
+              <p>Defining structures, nested structures, pointers to structures, unions and typedef.</p>
+              <div class="meta"><span>res/structures-and-unions.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="file,io,fopen,fread,fwrite">
+            <a class="topic-link" href="res/file-handling.html">
+              <h3>File Handling</h3>
+              <p>fopen, fclose, fprintf, fscanf, fread/fwrite, fseek and binary vs text IO.</p>
+              <div class="meta"><span>res/file-handling.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="preprocessor,macros,include,ifdef">
+            <a class="topic-link" href="res/preprocessor-and-macros.html">
+              <h3>Preprocessor & Macros</h3>
+              <p>#include, #define, macros, conditional compilation and common macro pitfalls.</p>
+              <div class="meta"><span>res/preprocessor-and-macros.html</span><span>Core</span></div>
+            </a>
+          </article>
+
+          <article class="card" data-tags="cli,argv,enum,bitfield">
+            <a class="topic-link" href="res/advanced-topics.html">
+              <h3>Advanced Topics</h3>
+              <p>Command-line args, enum, bitfields, inline functions, and memory model concepts.</p>
+              <div class="meta"><span>res/advanced-topics.html</span><span>Advanced</span></div>
+            </a>
+          </article>
+
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>Tip: Open any topic file inside the <code>/res</code> folder (e.g. <code>res/pointers.html</code>).</div>
+      <div>Last updated: <strong id="updated">—</strong></div>
+    </footer>
+  </div>
+
+  <!-- Minimal JS to add search/filter and show last-updated -->
+  <script>
+    (function () {
+      const q = document.getElementById('q');
+      const grid = document.getElementById('grid');
+      const cards = Array.from(grid.querySelectorAll('.card'));
+      const showAllBtn = document.getElementById('show-all');
+
+      function slugify(s){
+        return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+      }
+
+      function filter(term){
+        term = term.trim().toLowerCase();
+        if(!term){
+          cards.forEach(c => c.style.display = '');
+          return;
+        }
+        cards.forEach(c => {
+          const txt = (c.textContent || '').toLowerCase();
+          const tags = (c.getAttribute('data-tags') || '').toLowerCase();
+          const matches = txt.includes(term) || tags.includes(term);
+          c.style.display = matches ? '' : 'none';
+        });
+      }
+
+      q.addEventListener('input', e => filter(e.target.value));
+      showAllBtn.addEventListener('click', () => { q.value=''; filter(''); q.focus(); });
+
+      // display last-modified of index.html (best-effort - will show client-time)
+      // If hosted on a server that sets Last-Modified, you can replace this with server-provided value.
+      const updatedEl = document.getElementById('updated');
+      try{
+        // show current date as "built" timestamp
+        const d = new Date();
+        updatedEl.textContent = d.toLocaleString();
+      }catch(e){
+        updatedEl.textContent = 'unknown';
+      }
+
+      // Accessibility: make cards keyboard-focusable
+      cards.forEach(card => {
+        const link = card.querySelector('a.topic-link');
+        card.tabIndex = 0;
+        card.addEventListener('keydown', (ev) => {
+          if(ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            link.click();
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Structure of a C Program — Notes</title>
+  <meta name="description" content="Explains structure of a C program including headers, main function, comments, and compilation stages." />
+  <style>
+    :root{ --bg:#0b1220; --muted:#98a1b3; --accent:#60a5fa; }
+    body{margin:0;background:#071022;color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:24px;}
+    .container{max-width:900px;margin:auto;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:24px;}
+    h1{font-size:22px;margin:0 0 6px 0;}
+    p.lead{color:var(--muted);margin:0 0 18px 0;}
+    section{margin-bottom:16px;padding:14px;border:1px solid rgba(255,255,255,0.02);border-radius:10px;background:rgba(255,255,255,0.01);}
+    h2{font-size:17px;margin-top:0;}
+    p,li{color:#dce8f8;}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px;}
+    ul{margin:8px 0 8px 22px;}
+    footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:8px 12px;color:var(--muted);cursor:pointer;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Structure of a C Program</h1>
+      <p class="lead">Understand how a C program is organized: headers, functions, main(), and comments. Learn how the compiler processes it.</p>
+    </header>
+
+    <section>
+      <h2>Basic building blocks</h2>
+      <ul>
+        <li><strong>Documentation Section</strong> — Comments explaining what the program does.</li>
+        <li><strong>Link Section</strong> — Header files inclusion (<code>#include &lt;stdio.h&gt;</code>).</li>
+        <li><strong>Definition Section</strong> — Symbolic constants using <code>#define</code> or global variables.</li>
+        <li><strong>Global Declaration Section</strong> — Function declarations and global variables.</li>
+        <li><strong>main() Function Section</strong> — Starting point of program execution.</li>
+        <li><strong>Subprogram Section</strong> — User-defined functions.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Typical structure example</h2>
+      <pre><code>/* Documentation section */
+// Program: Sum of Two Numbers
+// Author: Krishna
+
+/* Link section */
+#include &lt;stdio.h&gt;
+
+/* Definition section */
+#define PI 3.14159
+
+/* Global declaration section */
+int sum(int a, int b); // function declaration
+
+/* main() function section */
+int main(void) {
+    int x = 5, y = 7, result;
+    result = sum(x, y);
+    printf("Sum = %d\n", result);
+    return 0;
+}
+
+/* Subprogram section */
+int sum(int a, int b) {
+    return a + b;
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Explanation of each part</h2>
+      <ul>
+        <li><strong>Comments:</strong> Non-executable lines used to document code (<code>//</code> for single-line, <code>/* ... */</code> for multi-line).</li>
+        <li><strong>#include:</strong> Inserts content of a header file. <code>&lt;stdio.h&gt;</code> provides input/output functions like <code>printf()</code> and <code>scanf()</code>.</li>
+        <li><strong>#define:</strong> Used to define constants or macros.</li>
+        <li><strong>Global variables:</strong> Declared outside functions, accessible throughout the program.</li>
+        <li><strong>Function declarations:</strong> Tell the compiler about a function’s name, return type, and parameters before its use.</li>
+        <li><strong>main() function:</strong> Entry point of every C program; returns an integer status to the OS.</li>
+        <li><strong>User-defined functions:</strong> Modularize code for reusability and clarity.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Compilation flow</h2>
+      <p>The C compilation process involves four major stages:</p>
+      <ol>
+        <li><strong>Preprocessing:</strong> Handles directives like <code>#include</code> and <code>#define</code>.</li>
+        <li><strong>Compilation:</strong> Converts C code into assembly language.</li>
+        <li><strong>Assembly:</strong> Translates assembly into object code (.o).</li>
+        <li><strong>Linking:</strong> Combines object files and libraries into an executable program.</li>
+      </ol>
+      <pre><code>gcc -Wall -std=c11 program.c -o program
+./program
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Example: Multiple functions in one file</h2>
+      <pre><code>#include &lt;stdio.h&gt;
+
+void greet(void) {
+    printf("Hello, welcome to C programming!\n");
+}
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int main(void) {
+    greet();
+    printf("Sum = %d\n", add(3, 4));
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Tips</h2>
+      <ul>
+        <li>Always start with <code>main()</code> and build additional functions gradually.</li>
+        <li>Use comments to explain purpose and logic, not obvious details.</li>
+        <li>Group related functions in separate source files for large programs.</li>
+        <li>Enable warnings with <code>-Wall -Wextra</code> to catch syntax issues early.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/structure-of-a-c-program.html</code></div>
+      <div><button class="btn" onclick="location.href='introduction-to-c.html'">Previous</button> <button class="btn" onclick="location.href='variables-and-constants.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

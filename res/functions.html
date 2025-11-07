@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Functions in C — Notes</title>
+  <meta name="description" content="Definition, syntax, complete programs, outputs, important notes, and guidance on when and how to use functions in C." />
+  <style>
+    :root{--bg:#071022;--card:rgba(255,255,255,0.02);--muted:#98a1b3;--accent:#60a5fa}
+    body{margin:0;background:linear-gradient(180deg,#04101a,#071022);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:20px}
+    .wrap{max-width:980px;margin:18px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 16px 0}
+    section{background:var(--card);padding:12px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    h2{margin:0 0 8px 0;font-size:16px}
+    p,li{color:#dce8f8}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid rgba(255,255,255,0.06);padding:8px;text-align:left}
+    th{background:rgba(255,255,255,0.04)}
+    .note{background:rgba(96,165,250,0.04);padding:8px;border-radius:6px;color:#dff3ff}
+    footer{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Functions</h1>
+      <p class="lead">Definition, syntax, complete example programs and outputs, things to remember, and guidance on when and how to use functions in C.</p>
+    </header>
+
+    <section id="definition">
+      <h2>Definition</h2>
+      <p>A <strong>function</strong> is a named block of code that performs a specific task. Functions help organize code into reusable, testable units and improve readability and maintainability.</p>
+    </section>
+
+    <section id="syntax-types">
+      <h2>Syntax & Types</h2>
+      <p>Basic function parts:</p>
+      <ul>
+        <li><strong>Return type</strong> — type of value the function returns (use <code>void</code> for none).</li>
+        <li><strong>Function name</strong> — identifier.
+        <li><strong>Parameter list</strong> — types and names of input values (can be empty).</li>
+        <li><strong>Function body</strong> — statements enclosed in braces.</li>
+      </ul>
+      <pre><code>// general form
+return_type function_name(type1 param1, type2 param2) {
+    /* body */
+    return value; // if return_type is not void
+}
+</code></pre>
+      <p>Function declarations (prototypes) tell the compiler about a function's signature before use:</p>
+      <pre><code>int add(int a, int b); // prototype
+
+int main(void) {
+    int s = add(2,3);
+}
+
+int add(int a, int b) { return a + b; }
+</code></pre>
+    </section>
+
+    <section id="call-by-value-ref">
+      <h2>Parameter passing: Call by value</h2>
+      <p>C passes function arguments by <strong>value</strong>. The function receives copies of the arguments — modifications inside the function do not affect the caller's variables unless pointers are used.</p>
+      <pre><code>// pass_by_value.c
+#include &lt;stdio.h&gt;
+
+void inc(int x) {
+    x = x + 1; // modifies local copy
+}
+
+int main(void) {
+    int a = 5;
+    inc(a);
+    printf("a = %d\n", a); // still 5
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="pass-by-ref-ptr">
+      <h2>Simulating pass-by-reference using pointers</h2>
+      <p>To modify caller variables, pass pointers (addresses) and dereference inside the function.</p>
+      <pre><code>// pass_by_pointer.c
+#include &lt;stdio.h&gt;
+
+void inc(int *p) {
+    (*p) = (*p) + 1; // modifies caller's variable
+}
+
+int main(void) {
+    int a = 5;
+    inc(&a);
+    printf("a = %d\n", a); // now 6
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="recursion">
+      <h2>Recursion</h2>
+      <p>A function may call itself. Useful for problems naturally defined recursively (factorial, tree traversal). Ensure a base case to prevent infinite recursion.</p>
+      <pre><code>// recursion_factorial.c
+#include &lt;stdio.h&gt;
+
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+int main(void) {
+    printf("5! = %d\n", factorial(5));
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:
+      <pre><code>5! = 120</code></pre></p>
+    </section>
+
+    <section id="inline-static-extern">
+      <h2>Storage classes & Related Keywords</h2>
+      <ul>
+        <li><strong>static</strong> — for functions, restricts visibility to the translation unit (file). For variables, preserves value across calls.</li>
+        <li><strong>extern</strong> — used to declare a function or variable defined in another file (default for functions).</li>
+        <li><strong>inline</strong> — a hint to the compiler to inline function body (may or may not be inlined).</li>
+      </ul>
+      <pre><code>// static function example
+static int helper(int x) { return x * 2; } // only visible in this .c file
+</code></pre>
+    </section>
+
+    <section id="function-pointer">
+      <h2>Function Pointers</h2>
+      <p>Functions have addresses and can be pointed to by function pointers — useful for callbacks and tables of functions.</p>
+      <pre><code>// function_pointer.c
+#include &lt;stdio.h&gt;
+
+int add(int a,int b){return a+b;}
+int mul(int a,int b){return a*b;}
+
+int main(void){
+    int (*op)(int,int) = add; // pointer to function
+    printf("add: %d\n", op(2,3));
+    op = mul;
+    printf("mul: %d\n", op(2,3));
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="examples">
+      <h2>Complete Example: Modular program with functions</h2>
+      <p>Program: simple student record operations split into functions.</p>
+      <pre><code>// students.c
+#include &lt;stdio.h&gt;
+
+void print_header(void) {
+    printf("ID  Name        Marks\n");
+    printf("--------------------\n");
+}
+
+void print_student(int id, const char *name, int marks) {
+    printf("%2d  %-10s %4d\n", id, name, marks);
+}
+
+int main(void) {
+    print_header();
+    print_student(1, "Alice", 82);
+    print_student(2, "Bob", 74);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:
+      <pre><code>ID  Name        Marks
+--------------------
+ 1  Alice        82
+ 2  Bob          74</code></pre></p>
+    </section>
+
+    <section id="things-to-remember">
+      <h2>Things to remember</h2>
+      <ul>
+        <li>Declare function prototypes before use or define functions before callers to avoid implicit declaration warnings.</li>
+        <li>Functions receive copies of arguments — use pointers to modify caller variables.</li>
+        <li>Match function signature (types and number of parameters) precisely.</li>
+        <li>Return meaningful values. Use <code>void</code> for no return value.</li>
+        <li>Avoid deep recursion that may overflow the call stack; convert to iterative solutions if needed.</li>
+        <li>Use <code>static</code> to limit function visibility to a file (encapsulation in C).</li>
+      </ul>
+    </section>
+
+    <section id="when-to-use">
+      <h2>When to use functions</h2>
+      <ul>
+        <li>Break large problems into smaller, focused tasks.</li>
+        <li>When a piece of logic is reused in multiple places.</li>
+        <li>To isolate complex logic for testing and maintenance.</li>
+        <li>To create a clear program structure: API-like separation between modules.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/functions.html</code></div>
+      <div><button class="btn" onclick="location.href='control-statements.html'">Previous</button> <button class="btn" onclick="location.href='arrays-and-strings.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

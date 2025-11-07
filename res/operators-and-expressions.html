@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Operators & Expressions — Complete Reference</title>
+  <meta name="description" content="Complete reference of C operators with explanations, precedence, associativity and runnable examples for each operator type." />
+  <style>
+    :root{--bg:#071022;--card:rgba(255,255,255,0.02);--muted:#98a1b3;--accent:#60a5fa}
+    body{margin:0;background:linear-gradient(180deg,#04101a,#071022);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:20px}
+    .wrap{max-width:1000px;margin:18px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 16px 0}
+    section{background:var(--card);padding:12px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    h2{margin:0 0 8px 0;font-size:16px}
+    p,li{color:#dce8f8}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid rgba(255,255,255,0.06);padding:8px;text-align:left}
+    th{background:rgba(255,255,255,0.04)}
+    .note{background:rgba(96,165,250,0.04);padding:8px;border-radius:6px;color:#dff3ff}
+    footer{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Operators & Expressions — Complete Reference</h1>
+      <p class="lead">Every operator in C with clear description, examples, and notes on precedence/associativity. Use the examples as complete programs — save and compile with <code>gcc -std=c11 -Wall</code>.</p>
+    </header>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>An <strong>operator</strong> performs an operation on operands. C operators are grouped by purpose: arithmetic, relational, logical, bitwise, assignment, increment/decrement, conditional (ternary), and a few special operators (<code>sizeof</code>, comma, pointer/member operators).</p>
+    </section>
+
+    <section id="arithmetic">
+      <h2>Arithmetic Operators</h2>
+      <p>Operators: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></p>
+      <p>Perform basic mathematical operations. Integer division truncates toward zero.</p>
+      <pre><code>// arithmetic_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int a = 11, b = 4;
+    printf("a + b = %d\n", a + b);
+    printf("a - b = %d\n", a - b);
+    printf("a * b = %d\n", a * b);
+    printf("a / b = %d (integer division)\n", a / b);
+    printf("a %% b = %d (remainder)\n", a % b);
+    double x = 11.0, y = 4.0;
+    printf("x / y = %.2f (floating-point)\n", x / y);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="relational">
+      <h2>Relational (Comparison) Operators</h2>
+      <p>Operators: <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></p>
+      <p>Used to compare values; result is <code>1</code> for true and <code>0</code> for false (in C tradition).</p>
+      <pre><code>// relational_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int a = 5, b = 8;
+    printf("a == b: %d\n", a == b);
+    printf("a != b: %d\n", a != b);
+    printf("a &lt; b: %d\n", a &lt; b);
+    printf("a &gt;= b: %d\n", a &gt;= b);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="logical">
+      <h2>Logical Operators</h2>
+      <p>Operators: <code>&&</code> (logical AND), <code>||</code> (logical OR), <code>!</code> (logical NOT)</p>
+      <p>Work on boolean expressions (zero = false, non-zero = true). Use for compound conditions.</p>
+      <pre><code>// logical_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int x = 1, y = 0;
+    printf("x && y = %d\n", x && y);
+    printf("x || y = %d\n", x || y);
+    printf("!x = %d, !y = %d\n", !x, !y);
+    // short-circuit behavior: second operand may not be evaluated
+    int a = 0;
+    if (a != 0 && (10 / a) &gt; 0) printf("safe\n");
+    else printf("short-circuit prevented division by zero\n");
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="bitwise">
+      <h2>Bitwise Operators</h2>
+      <p>Operators: <code>&amp;</code> (AND), <code>|</code> (OR), <code>^</code> (XOR), <code>~</code> (NOT), <code>&lt;&lt;</code> (left shift), <code>&gt;&gt;</code> (right shift)</p>
+      <p>Operate on integer types at the bit level — useful for flags, masks, and low-level manipulations.</p>
+      <pre><code>// bitwise_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    unsigned int a = 5;  // 0101
+    unsigned int b = 9;  // 1001
+    printf("a & b = %u\n", a & b);
+    printf("a | b = %u\n", a | b);
+    printf("a ^ b = %u\n", a ^ b);
+    printf("~a = %u\n", ~a);
+    printf("b << 1 = %u\n", b << 1);
+    printf("b >> 1 = %u\n", b >> 1);
+    return 0;
+}
+</code></pre>
+      <p class="note">Shifts on signed types are implementation-defined for right shift; use unsigned types for defined behavior.</p>
+    </section>
+
+    <section id="assignment">
+      <h2>Assignment Operators</h2>
+      <p>Operators: <code>=</code> (simple assignment) and compound assignments <code>+=, -=, *=, /=, %=, &=, |=, ^=, &lt;&lt;=, &gt;&gt;=</code></p>
+      <pre><code>// assignment_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int x = 10;
+    x += 5; // x = x + 5
+    printf("x = %d\n", x);
+    x *= 2; // x = x * 2
+    printf("x = %d\n", x);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="increment-decrement">
+      <h2>Increment and Decrement</h2>
+      <p>Operators: <code>++</code> and <code>--</code> have prefix and postfix forms (<code>++i</code> / <code>i++</code>).</p>
+      <p>Prefix returns value after change; postfix returns old value and changes after expression evaluation.</p>
+      <pre><code>// inc_dec_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int i = 5;
+    printf("i = %d\n", i);
+    printf("i++ = %d (postfix)\n", i++); // prints 5, then i becomes 6
+    printf("++i = %d (prefix)\n", ++i); // increments first, prints 7
+
+    int a = 3;
+    int b = ++a + 5; // a becomes 4, then b = 9
+    int c = a++ + 5; // c = 9, then a becomes 5
+    printf("a=%d, b=%d, c=%d\n", a, b, c);
+    return 0;
+}
+</code></pre>
+      <p class="note">Avoid using <code>++</code> or <code>--</code> on the same variable multiple times in one expression — behavior can be undefined.</p>
+    </section>
+
+    <section id="conditional">
+      <h2>Conditional (Ternary) Operator</h2>
+      <p>Syntax: <code>condition ? expression_if_true : expression_if_false</code></p>
+      <pre><code>// ternary_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int a = 10, b = 20;
+    int max = (a &gt; b) ? a : b;
+    printf("Max = %d\n", max);
+    // nested ternary (readability warning)
+    int sign = (a &gt; 0) ? 1 : ((a == 0) ? 0 : -1);
+    printf("sign = %d\n", sign);
+    return 0;
+}
+</code></pre>
+      <p class="note">Ternary is an expression — it yields a value. Avoid deeply nested ternaries for readability.</p>
+    </section>
+
+    <section id="sizeof-comma-cast">
+      <h2>Special Operators</h2>
+      <ul>
+        <li><strong><code>sizeof</code></strong> — yields size in bytes of a type or expression. Result is <code>size_t</code>.</li>
+        <li><strong>Comma <code>,</code></strong> — evaluates left operand, discards result, then evaluates right operand and yields its value.</li>
+        <li><strong>Cast <code>(type)</code></strong> — explicit conversion.</li>
+      </ul>
+      <pre><code>// special_example.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    printf("sizeof(int) = %zu\n", sizeof(int));
+    int a = (int)3.7; // cast double to int
+    printf("a = %d\n", a);
+    int x = (1, 2, 3); // comma operator: x gets 3
+    printf("x = %d\n", x);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="pointer-member">
+      <h2>Pointer & Member Operators</h2>
+      <ul>
+        <li><code>*</code> (indirection) — access value at address stored in pointer.</li>
+        <li><code>&amp;</code> (address-of) — obtain address of a variable.</li>
+        <li><code>-></code> (arrow) — access member of struct via pointer.</li>
+        <li><code>.</code> (dot) — access member of struct value.</li>
+      </ul>
+      <pre><code>// pointer_member_example.c
+#include &lt;stdio.h&gt;
+struct Point { int x; int y; };
+int main(void) {
+    struct Point p = { .x = 2, .y = 3 };
+    struct Point *pp = &p;
+    printf("p.x = %d, p.y = %d\n", p.x, p.y);
+    printf("via pointer: pp->x = %d, pp->y = %d\n", pp->x, pp->y);
+    int val = 10;
+    int *ptr = &val;
+    printf("*ptr = %d\n", *ptr);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="other">
+      <h2>Other operators</h2>
+      <ul>
+        <li><strong>Member pointer <code>.*</code> and <code>->*</code></strong> — (C++ only; not standard C).</li>
+        <li><strong>Pointer to function:</strong> function names can be used as pointers in expressions.</li>
+      </ul>
+      <pre><code>// function pointer example
+#include &lt;stdio.h&gt;
+int add(int a, int b) { return a + b; }
+int main(void) {
+    int (*fn)(int,int) = add; // function pointer
+    printf("result = %d\n", fn(2,3));
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="precedence">
+      <h2>Operator Precedence & Associativity (summary)</h2>
+      <p>Higher precedence operators are evaluated first. Use parentheses to be explicit.</p>
+      <table>
+        <thead>
+          <tr><th>Precedence (High → Low)</th><th>Operators</th><th>Associativity</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>postfix: <code>() [] . -> ++ --</code></td><td>Left → Right</td></tr>
+          <tr><td>2</td><td>unary: <code>+ - ! ~ ++ -- (type) * &amp; sizeof</code></td><td>Right → Left</td></tr>
+          <tr><td>3</td><td><code>* / %</code></td><td>Left → Right</td></tr>
+          <tr><td>4</td><td><code>+ -</code></td><td>Left → Right</td></tr>
+          <tr><td>5</td><td><code>&lt;&lt; &gt;&gt;</code></td><td>Left → Right</td></tr>
+          <tr><td>6</td><td>relational: <code>&lt; &gt; &lt;= &gt;=</code></td><td>Left → Right</td></tr>
+          <tr><td>7</td><td><code>== !=</code></td><td>Left → Right</td></tr>
+          <tr><td>8</td><td><code>&amp;</code></td><td>Left → Right</td></tr>
+          <tr><td>9</td><td><code>^</code></td><td>Left → Right</td></tr>
+          <tr><td>10</td><td><code>|</code></td><td>Left → Right</td></tr>
+          <tr><td>11</td><td><code>&amp;&amp;</code></td><td>Left → Right</td></tr>
+          <tr><td>12</td><td><code>||</code></td><td>Left → Right</td></tr>
+          <tr><td>13</td><td>?: (ternary)</td><td>Right → Left</td></tr>
+          <tr><td>14</td><td>assignment: <code>= += -= *= /= %= &amp;= |= ^= &lt;&lt;= &gt;&gt;=</code></td><td>Right → Left</td></tr>
+          <tr><td>15</td><td><code>,</code> (comma)</td><td>Left → Right</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Precedence tables are reference; parentheses always make intent clear and avoid surprises.</div>
+    </section>
+
+    <section id="undefined-behavior">
+      <h2>Undefined and Implementation-defined Behavior</h2>
+      <p>Some uses of operators can lead to undefined behavior. Examples:</p>
+      <ul>
+        <li>Modifying and reading the same variable without sequence points, e.g. <code>i = i++ + 1;</code></li>
+        <li>Shifting by a negative value or by >= width of the type.</li>
+        <li>Signed integer overflow (<code>INT_MAX + 1</code>).</li>
+      </ul>
+      <div class="note">Avoid writing code that depends on undefined behavior; use well-defined constructs instead.</div>
+    </section>
+
+    <footer>
+      <div>File: <code>res/operators-and-expressions.html</code></div>
+      <div><button class="btn" onclick="location.href='input-output.html'">Previous</button> <button class="btn" onclick="location.href='control-statements.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

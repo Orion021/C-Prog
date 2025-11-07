@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arrays & Strings in C — Notes</title>
+  <meta name="description" content="Comprehensive notes on arrays and strings in C: definitions, syntax, complete example programs with outputs, pitfalls, and when to use them." />
+  <style>
+    :root{--bg:#071022;--card:rgba(255,255,255,0.02);--muted:#98a1b3;--accent:#60a5fa}
+    body{margin:0;background:linear-gradient(180deg,#04101a,#071022);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:20px}
+    .wrap{max-width:980px;margin:18px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 16px 0}
+    section{background:var(--card);padding:12px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    h2{margin:0 0 8px 0;font-size:16px}
+    p,li{color:#dce8f8}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid rgba(255,255,255,0.06);padding:8px;text-align:left}
+    th{background:rgba(255,255,255,0.04)}
+    .note{background:rgba(96,165,250,0.04);padding:8px;border-radius:6px;color:#dff3ff}
+    footer{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Arrays & Strings</h1>
+      <p class="lead">Definition, syntax, complete example programs (with expected output), pitfalls, and guidance on when to use arrays and strings in C.</p>
+    </header>
+
+    <section id="definition">
+      <h2>Definition</h2>
+      <p><strong>Arrays</strong> are collections of elements of the same type stored in contiguous memory. <strong>Strings</strong> in C are arrays of characters terminated by a null character <code>'\0'</code>.</p>
+    </section>
+
+    <section id="syntax">
+      <h2>Syntax</h2>
+      <pre><code>// declare an array of 5 integers
+int a[5];
+// initialize
+int b[5] = {1,2,3,4,5};
+
+// 2D array (matrix) 3x3
+int mat[3][3];
+
+// C-string (array of chars) - must have space for '\0'
+char name[6] = "Alice"; // 'A' 'l' 'i' 'c' 'e' '\0'
+</code></pre>
+    </section>
+
+    <section id="1d-array-example">
+      <h2>Example: Sum of elements (1D array)</h2>
+      <pre><code>// sum_array.c
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int arr[] = {10, 20, 30, 40, 50};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int sum = 0;
+    for (int i = 0; i &lt; n; i++) sum += arr[i];
+    printf("Sum = %d\n", sum);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:</p>
+      <pre><code>Sum = 150</code></pre>
+    </section>
+
+    <section id="2d-array-example">
+      <h2>Example: 2D array (matrix transpose)</h2>
+      <pre><code>// transpose.c
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a[2][3] = { {1,2,3}, {4,5,6} };
+    int t[3][2];
+    for (int i = 0; i &lt; 2; i++)
+        for (int j = 0; j &lt; 3; j++)
+            t[j][i] = a[i][j];
+
+    printf("Transpose:\n");
+    for (int i = 0; i &lt; 3; i++) {
+        for (int j = 0; j &lt; 2; j++) printf("%d ", t[i][j]);
+        printf("\n");
+    }
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:</p>
+      <pre><code>Transpose:
+1 4 
+2 5 
+3 6 </code></pre>
+    </section>
+
+    <section id="strings-basics">
+      <h2>Strings: basics and common functions</h2>
+      <p>Strings are arrays of characters terminated by <code>'\0'</code>. The standard header <code>&lt;string.h&gt;</code> provides common functions:</p>
+      <ul>
+        <li><code>strlen(s)</code> — length excluding <code>'\0'</code></li>
+        <li><code>strcpy(dest, src)</code> — copy string (unsafe if dest too small)</li>
+        <li><code>strncpy(dest, src, n)</code> — copy up to n bytes</li>
+        <li><code>strcat(dest, src)</code> — concatenate (dest must have enough space)</li>
+        <li><code>strcmp(a,b)</code> — compare (0 if equal, &lt;0 or &gt;0 otherwise)</li>
+      </ul>
+      <pre><code>// string_example.c
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main(void) {
+    char s1[20] = "Hello";
+    char s2[] = " World";
+    strcat(s1, s2); // s1 must have enough space
+    printf("s1 = %s, len = %zu\n", s1, strlen(s1));
+    char s3[10];
+    strcpy(s3, "Hi");
+    printf("s3 = %s\n", s3);
+    printf("compare: %d\n", strcmp("abc","abd"));
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:</p>
+      <pre><code>s1 = Hello World, len = 11
+s3 = Hi
+compare: -1</code></pre>
+      <div class="note">Always ensure destination buffers are large enough to hold the result and the terminating <code>'\0'</code>. Prefer <code>strncpy</code>, <code>snprintf</code> and bounds-checked functions to avoid buffer overflow.</div>
+    </section>
+
+    <section id="string-input">
+      <h2>Reading strings safely</h2>
+      <pre><code>// fgets_example.c
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    char buf[16];
+    printf("Enter text: ");
+    if (fgets(buf, sizeof(buf), stdin)) {
+        // remove trailing newline if present
+        size_t len = 0;
+        while (buf[len] != '\0') len++;
+        if (len &gt; 0 && buf[len-1] == '\n') buf[len-1] = '\0';
+        printf("You entered: %s\n", buf);
+    }
+    return 0;
+}
+</code></pre>
+      <p class="note">Never use <code>gets()</code>. <code>fgets()</code> reads at most n-1 characters and appends <code>'\0'</code> — but may include a newline.</p>
+    </section>
+
+    <section id="arrays-pointers">
+      <h2>Arrays and Pointers</h2>
+      <p>The array name decays to a pointer to its first element in most expressions. Be careful: arrays are not pointers — their sizes cannot be changed and <code>sizeof</code> behaves differently.</p>
+      <pre><code>int a[5];
+int *p = a; // p points to a[0]
+printf("a[2] = %d\n", *(p + 2));
+</code></pre>
+      <div class="note">Using <code>sizeof(a)/sizeof(a[0])</code> works only when <code>a</code> is an actual array, not a pointer passed to a function.</div>
+    </section>
+
+    <section id="string-manipulation-example">
+      <h2>Example: Reverse a string in-place</h2>
+      <pre><code>// reverse_string.c
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+void reverse(char *s) {
+    int i = 0, j = strlen(s) - 1;
+    while (i &lt; j) {
+        char t = s[i]; s[i] = s[j]; s[j] = t;
+        i++; j--;
+    }
+}
+
+int main(void) {
+    char s[100] = "Hello";
+    reverse(s);
+    printf("Reversed: %s\n", s);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:</p>
+      <pre><code>Reversed: olleH</code></pre>
+    </section>
+
+    <section id="pitfalls">
+      <h2>Common pitfalls & things to remember</h2>
+      <ul>
+        <li>C-strings require a terminating <code>'\0'</code> — forgetting it causes undefined behavior when treating as string.</li>
+        <li>Always allocate enough space for the terminating null byte.</li>
+        <li><code>sizeof</code> on an array gives total bytes; when passed to a function it decays to a pointer and size information is lost.</li>
+        <li>Be careful with signed vs unsigned indices in loops using <code>size_t</code> for sizes.</li>
+        <li>Avoid buffer overflows by using bounds-checked functions (<code>fgets</code>, <code>snprintf</code>, <code>strncpy</code> with care).</li>
+      </ul>
+    </section>
+
+    <section id="when-to-use">
+      <h2>When to use arrays and strings</h2>
+      <ul>
+        <li>Use arrays when you need fixed-size collections of elements with fast indexed access.</li>
+        <li>Use dynamic memory (pointers + malloc) when array size must be determined at runtime.</li>
+        <li>Use C-strings for simple textual data; for complex text handling prefer higher-level libraries or careful buffer management.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/arrays-and-strings.html</code></div>
+      <div><button class="btn" onclick="location.href='functions.html'">Previous</button> <button class="btn" onclick="location.href='pointers.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

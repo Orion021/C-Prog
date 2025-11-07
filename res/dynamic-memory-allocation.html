@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic Memory Allocation in C — Notes</title>
+  <meta name="description" content="Simple, clear notes on dynamic memory allocation in C — explanation of malloc, calloc, realloc, and free with examples and best practices." />
+  <style>
+    :root{--bg:#071022;--card:rgba(255,255,255,0.02);--muted:#98a1b3;--accent:#60a5fa}
+    body{margin:0;background:linear-gradient(180deg,#04101a,#071022);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:20px}
+    .wrap{max-width:950px;margin:18px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 16px 0}
+    section{background:var(--card);padding:12px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    h2{margin:0 0 8px 0;font-size:16px}
+    p,li{color:#dce8f8}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+    .note{background:rgba(96,165,250,0.04);padding:8px;border-radius:6px;color:#dff3ff;margin-top:6px}
+    footer{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Dynamic Memory Allocation</h1>
+      <p class="lead">A clean and simple guide to understanding how memory is allocated and freed at runtime using <code>malloc()</code>, <code>calloc()</code>, <code>realloc()</code>, and <code>free()</code>.</p>
+    </header>
+
+    <section id="definition">
+      <h2>What is Dynamic Memory?</h2>
+      <p>Dynamic memory means requesting and managing memory while a program is running. This allows creating arrays or structures of sizes not known during compilation.</p>
+      <p>Static memory (normal variables or arrays) is fixed at compile time, but dynamic memory comes from the <strong>heap</strong> using special functions from <code>&lt;stdlib.h&gt;</code>.</p>
+    </section>
+
+    <section id="functions">
+      <h2>Functions for Dynamic Memory</h2>
+      <ul>
+        <li><strong><code>malloc(size)</code></strong> — Allocates a block of memory of given size (in bytes). Contents are uninitialized.</li>
+        <li><strong><code>calloc(n, size)</code></strong> — Allocates memory for an array of <code>n</code> elements, each of <code>size</code> bytes, and sets all bits to zero.</li>
+        <li><strong><code>realloc(ptr, new_size)</code></strong> — Changes the size of a previously allocated memory block.</li>
+        <li><strong><code>free(ptr)</code></strong> — Releases previously allocated memory back to the system.</li>
+      </ul>
+      <div class="note">All functions return a <code>void*</code> pointer. Always check if the returned pointer is <code>NULL</code> before using it.</div>
+    </section>
+
+    <section id="malloc-example">
+      <h2>Example: malloc()</h2>
+      <pre><code>// malloc_example.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int n = 5;
+    int *arr = malloc(n * sizeof(int));
+    if (arr == NULL) {
+        printf("Memory not allocated!\n");
+        return 1;
+    }
+
+    for (int i = 0; i &lt; n; i++) arr[i] = i + 1;
+
+    printf("Array elements: ");
+    for (int i = 0; i &lt; n; i++) printf("%d ", arr[i]);
+
+    free(arr); // release memory
+    return 0;
+}
+</code></pre>
+      <p><strong>Output:</strong></p>
+      <pre><code>Array elements: 1 2 3 4 5</code></pre>
+    </section>
+
+    <section id="calloc-example">
+      <h2>Example: calloc()</h2>
+      <pre><code>// calloc_example.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int *arr = calloc(5, sizeof(int)); // initializes to 0
+    if (!arr) return 1;
+
+    printf("Array elements (initialized to 0): ");
+    for (int i = 0; i &lt; 5; i++) printf("%d ", arr[i]);
+
+    free(arr);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output:</strong></p>
+      <pre><code>Array elements (initialized to 0): 0 0 0 0 0</code></pre>
+    </section>
+
+    <section id="realloc-example">
+      <h2>Example: realloc()</h2>
+      <pre><code>// realloc_example.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int *arr = malloc(3 * sizeof(int));
+    for (int i = 0; i &lt; 3; i++) arr[i] = i + 1;
+
+    arr = realloc(arr, 5 * sizeof(int)); // expand to 5 elements
+    for (int i = 3; i &lt; 5; i++) arr[i] = i + 1;
+
+    printf("Array after realloc: ");
+    for (int i = 0; i &lt; 5; i++) printf("%d ", arr[i]);
+
+    free(arr);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output:</strong></p>
+      <pre><code>Array after realloc: 1 2 3 4 5</code></pre>
+      <div class="note">Always assign the result of <code>realloc()</code> to a temporary pointer first if you need to avoid losing original memory in case of failure.</div>
+    </section>
+
+    <section id="free">
+      <h2>free()</h2>
+      <p><code>free()</code> releases memory allocated with malloc, calloc, or realloc. Once freed, the pointer becomes invalid.</p>
+      <pre><code>free(ptr);
+ptr = NULL; // good practice to avoid dangling pointers</code></pre>
+    </section>
+
+    <section id="things-to-remember">
+      <h2>Things to Remember</h2>
+      <ul>
+        <li>Always check if memory allocation succeeded (<code>ptr != NULL</code>).</li>
+        <li>Uninitialized (malloc) memory contains garbage values; <code>calloc</code> sets to zero.</li>
+        <li>Always <code>free()</code> what you allocate to prevent memory leaks.</li>
+        <li>After freeing, set pointer to <code>NULL</code>.</li>
+        <li>Do not free memory twice — leads to undefined behavior.</li>
+        <li>Prefer dynamic allocation when array size is not known until runtime.</li>
+      </ul>
+    </section>
+
+    <section id="when-to-use">
+      <h2>When to Use Dynamic Memory</h2>
+      <ul>
+        <li>When the required size of an array or structure is not known beforehand.</li>
+        <li>For large data structures that might exceed stack size.</li>
+        <li>When you need flexible, resizable data (linked lists, variable-length arrays).</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/dynamic-memory-allocation.html</code></div>
+      <div><button class="btn" onclick="location.href='pointers.html'">Previous</button> <button class="btn" onclick="location.href='structures-and-unions.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

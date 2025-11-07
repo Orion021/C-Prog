@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Structures & Unions in C — Detailed Notes</title>
+  <meta name="description" content="In-depth, easy-to-understand guide to structures and unions in C: syntax, memory layout, examples, nested structs, pointers, typedef, unions, bit-fields, padding, and best practices." />
+  <style>
+    :root{--bg:#071022;--card:rgba(255,255,255,0.02);--muted:#98a1b3;--accent:#60a5fa}
+    body{margin:0;background:linear-gradient(180deg,#04101a,#071022);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:20px}
+    .wrap{max-width:980px;margin:18px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 16px 0}
+    section{background:var(--card);padding:14px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    h2{margin:0 0 8px 0;font-size:16px}
+    p,li{color:#dce8f8}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid rgba(255,255,255,0.06);padding:8px;text-align:left}
+    th{background:rgba(255,255,255,0.04)}
+    .note{background:rgba(96,165,250,0.04);padding:8px;border-radius:6px;color:#dff3ff}
+    footer{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Structures &amp; Unions — Detailed Guide</h1>
+      <p class="lead">Deep but clear coverage of <code>struct</code> and <code>union</code> in C — syntax, examples, memory layout (padding & alignment), nested types, pointers, <code>typedef</code>, bit-fields, and best practices.</p>
+    </header>
+
+    <section id="what-is-struct">
+      <h2>What is a <code>struct</code>?</h2>
+      <p>A <code>struct</code> groups variables (possibly of different types) under a single name. Each member has its own storage and offset within the structure.</p>
+      <pre><code>struct Point {
+    int x;
+    int y;
+};
+
+struct Point p = { .x = 2, .y = 3 };
+</code></pre>
+      <div class="note">Use structs to model real-world records: student, employee, point, packet header, etc.</div>
+    </section>
+
+    <section id="decl-init-access">
+      <h2>Declaration, Initialization, and Access</h2>
+      <pre><code>// declare
+struct Student {
+    int id;
+    char name[32];
+    float marks;
+};
+
+// create and initialize
+struct Student s = { 1, "Alice", 88.5f };
+// designated initializer (C99):
+struct Student t = { .name = "Bob", .marks = 75.0f, .id = 2 };
+
+// access
+printf("%s has marks %.1f\n", s.name, s.marks);
+</code></pre>
+    </section>
+
+    <section id="sizeof-layout">
+      <h2>Memory layout, alignment, and padding</h2>
+      <p>Compilers align members for efficient access. This can introduce padding between members and at the end of the struct.</p>
+      <pre><code>// example to observe padding
+#include &lt;stdio.h&gt;
+struct P {
+    char c;    // 1 byte
+    int i;     // 4 bytes (often aligned to 4)
+    char d;    // 1 byte
+};
+int main(void) {
+    printf("sizeof(struct P) = %zu\n", sizeof(struct P));
+    return 0;
+}
+</code></pre>
+      <p>Typical result: <code>sizeof(struct P)</code> may be 12, not 6, because of padding between <code>c</code> and <code>i</code> and tail padding to align the whole struct.</p>
+      <div class="note">Order members by decreasing alignment requirement (e.g., put larger types first) to reduce padding and overall size.</div>
+    </section>
+
+    <section id="nested-struct">
+      <h2>Nested structures and arrays of structs</h2>
+      <pre><code>// nested and array
+struct Address { char street[50]; int zip; };
+struct Person {
+    char name[30];
+    struct Address addr; // nested
+};
+
+struct Person people[10]; // array of structs
+</code></pre>
+      <p>Access nested members with dot operator: <code>people[0].addr.zip</code></p>
+    </section>
+
+    <section id="pointers-to-structs">
+      <h2>Pointers to structures</h2>
+      <pre><code>struct Point p = {2,3};
+struct Point *pp = &p;
+printf("x via pointer = %d\n", pp->x); // equivalent to (*pp).x
+</code></pre>
+      <div class="note">Use pointers for passing large structs to functions efficiently or building linked data structures.</div>
+    </section>
+
+    <section id="typedef-struct">
+      <h2><code>typedef</code> with <code>struct</code></h2>
+      <pre><code>typedef struct {
+    int id;
+    char name[32];
+} Student;
+
+Student s = {1, "Alice"};
+</code></pre>
+      <p>Using <code>typedef</code> makes code cleaner by avoiding repeated use of the <code>struct</code> keyword.</p>
+    </section>
+
+    <section id="passing-functions">
+      <h2>Passing structures to functions</h2>
+      <p>Prefer passing a pointer to a struct to avoid copying large data. Use <code>const</code> for read-only parameters.</p>
+      <pre><code>void print_student(const Student *s) {
+    printf("%d %s\n", s->id, s->name);
+}
+
+// call: print_student(&s);
+</code></pre>
+    </section>
+
+    <section id="what-is-union">
+      <h2>What is a <code>union</code>?</h2>
+      <p>A <code>union</code> stores different data types in the same memory location. All members share the same memory; the size of the union equals the size of its largest member.</p>
+      <pre><code>union Number {
+    int i;
+    float f;
+    char bytes[4];
+};
+
+union Number n;
+n.i = 0x41424344; // same memory as n.bytes
+</code></pre>
+      <div class="note">Use unions when you need different views of the same memory (e.g., interpreting bytes of a number, variant types in protocols).</div>
+    </section>
+
+    <section id="union-example">
+      <h2>Union example and caution</h2>
+      <pre><code>// union_example.c
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+union U { int i; float f; char s[8]; };
+int main(void) {
+    union U u;
+    u.i = 42;
+    printf("u.i = %d, u.f = %f\n", u.i, u.f);
+    strcpy(u.s, "hi");
+    printf("u.s = %s, u.i = %d\n", u.s, u.i);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output (illustrative):</strong></p>
+      <pre><code>u.i = 42, u.f = 0.000000
+u.s = hi, u.i = 26729</code></pre>
+      <p>Writing to one member and reading another can be implementation-defined; be careful and document intended uses.</p>
+    </section>
+
+    <section id="bit-fields">
+      <h2>Bit-fields</h2>
+      <p>Bit-fields allow packing multiple small integer fields into a struct with bit-level widths (useful for compact representations like protocol headers).</p>
+      <pre><code>struct Flags {
+    unsigned int a:1;
+    unsigned int b:3;
+    unsigned int c:4;
+};
+
+struct Flags f = {1, 5, 9};
+</code></pre>
+      <div class="note">Bit-field layout, ordering, and alignment are implementation-defined — not portable across different compilers/architectures if exact layout matters.</div>
+    </section>
+
+    <section id="sizeof-examples">
+      <h2>Examples: sizeof and offsets</h2>
+      <pre><code>// offsetof & sizeof example
+#include &lt;stdio.h&gt;
+#include &lt;stddef.h&gt;
+
+struct X { char c; int i; short s; };
+int main(void) {
+    printf("sizeof(struct X) = %zu\n", sizeof(struct X));
+    printf("offsets: c=%zu, i=%zu, s=%zu\n", offsetof(struct X, c), offsetof(struct X, i), offsetof(struct X, s));
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="common-pitfalls">
+      <h2>Common pitfalls &amp; best practices</h2>
+      <ul>
+        <li>Be mindful of padding — reorder members to minimize size when space matters.</li>
+        <li>Avoid reading a struct member that hasn't been initialized.</li>
+        <li>When serializing structs, never assume memory layout; use explicit packing or manual serialization for portability.</li>
+        <li>Use <code>const</code> for read-only pointers to structs passed to functions.</li>
+        <li>Prefer explicit <code>memcpy</code> for copying raw bytes when necessary, rather than assigning unions for cross-platform layout.</li>
+      </ul>
+    </section>
+
+    <section id="when-to-use">
+      <h2>When to use <code>struct</code> vs <code>union</code></h2>
+      <ul>
+        <li>Use <code>struct</code> when you need to store multiple fields simultaneously (records).</li>
+        <li>Use <code>union</code> when a value can be one of several types and you want to save memory (tagged unions often combine an enum with a union).</li>
+        <li>For portable variant types, implement a tagged union (enum + union) and serialize carefully.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/structures-and-unions.html</code></div>
+      <div><button class="btn" onclick="location.href='dynamic-memory-allocation.html'">Previous</button> <button class="btn" onclick="location.href='file-handling.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

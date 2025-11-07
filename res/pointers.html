@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pointers in C — Notes</title>
+  <meta name="description" content="Comprehensive guide to pointers in C: definition, syntax, examples, pointer arithmetic, pointers & arrays, pointers to pointers, function pointers, common pitfalls and best practices." />
+  <style>
+    :root{--bg:#071022;--card:rgba(255,255,255,0.02);--muted:#98a1b3;--accent:#60a5fa}
+    body{margin:0;background:linear-gradient(180deg,#04101a,#071022);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:20px}
+    .wrap{max-width:980px;margin:18px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 16px 0}
+    section{background:var(--card);padding:12px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    h2{margin:0 0 8px 0;font-size:16px}
+    p,li{color:#dce8f8}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid rgba(255,255,255,0.06);padding:8px;text-align:left}
+    th{background:rgba(255,255,255,0.04)}
+    .note{background:rgba(96,165,250,0.04);padding:8px;border-radius:6px;color:#dff3ff}
+    footer{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Pointers</h1>
+      <p class="lead">Definition, syntax, detailed examples (with expected output), pointer arithmetic, relationships with arrays, pointers to pointers, function pointers, memory allocation and best practices.</p>
+    </header>
+
+    <section id="definition">
+      <h2>Definition</h2>
+      <p>A <strong>pointer</strong> is a variable that stores the memory address of another variable. Pointers enable indirect access to memory and are essential for dynamic memory, data structures, and efficient APIs.</p>
+    </section>
+
+    <section id="syntax-basic">
+      <h2>Basic syntax</h2>
+      <pre><code>int x = 10;      // normal variable
+int *p = &x;      // p stores address of x
+printf("x = %d, *p = %d\n", x, *p); // dereference p to get value
+printf("p = %p\n", (void*)p);      // print address
+</code></pre>
+    </section>
+
+    <section id="example-basic">
+      <h2>Example: Basic pointer use</h2>
+      <pre><code>// pointer_basic.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int x = 42;
+    int *p = &x;
+    printf("x = %d\n", x);
+    printf("p points to address %p\n", (void*)p);
+    printf("value via pointer *p = %d\n", *p);
+    *p = 100; // modify x through pointer
+    printf("x after modification = %d\n", x);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong> (addresses vary):</p>
+      <pre><code>x = 42
+p points to address 0x7ffd... 
+value via pointer *p = 42
+x after modification = 100</code></pre>
+    </section>
+
+    <section id="null-void-pointer">
+      <h2>Null pointer &amp; void pointer</h2>
+      <p><strong>NULL</strong> is used to indicate a pointer that points to nothing. <strong>void*</strong> is a generic pointer type (no dereference without cast).</p>
+      <pre><code>int *p = NULL; // safe initialization
+void *any = p;   // void* can hold any data pointer
+// cannot do *any without casting to appropriate type
+</code></pre>
+      <div class="note">Always initialize pointers; checking for <code>NULL</code> before dereferencing prevents crashes.</div>
+    </section>
+
+    <section id="pointer-arithmetic">
+      <h2>Pointer arithmetic</h2>
+      <p>Adding/subtracting integers to/from pointers moves them by multiples of the pointed type's size.</p>
+      <pre><code>// pointer_arith.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int arr[] = {10,20,30};
+    int *p = arr; // points to arr[0]
+    printf("*p = %d\n", *p);       // 10
+    p++; // move to next int (arr[1])
+    printf("*p after p++ = %d\n", *p); // 20
+    printf("p+2 points to %d\n", *(p+1)); // 30
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="pointers-arrays">
+      <h2>Pointers and arrays</h2>
+      <p>Array names decay to pointers to the first element in expressions. However, arrays are not assignable and <code>sizeof</code> behaves differently.</p>
+      <pre><code>int a[5];
+int *p = a; // allowed
+// a = p; // error — array not assignable
+printf("sizeof(a)=%zu, sizeof(p)=%zu\n", sizeof(a), sizeof(p));
+</code></pre>
+      <div class="note">When passing arrays to functions, you actually pass a pointer; pass length separately.</div>
+    </section>
+
+    <section id="ptr-to-ptr">
+      <h2>Pointers to pointers</h2>
+      <pre><code>// ptr_to_ptr.c
+#include &lt;stdio.h&gt;
+int main(void) {
+    int x = 7;
+    int *p = &x;
+    int **pp = &p;
+    printf("x=%d, *p=%d, **pp=%d\n", x, *p, **pp);
+    **pp = 20; // modifies x
+    printf("x after **pp=20 -> x=%d\n", x);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="pointers-functions">
+      <h2>Pointers &amp; functions (pass-by-address)</h2>
+      <p>Use pointers to return multiple values or modify arguments.</p>
+      <pre><code>// swap.c
+#include &lt;stdio.h&gt;
+
+void swap(int *a, int *b) {
+    int t = *a; *a = *b; *b = t;
+}
+
+int main(void) {
+    int x = 2, y = 5;
+    swap(&x, &y);
+    printf("x=%d, y=%d\n", x, y);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:</p>
+      <pre><code>x=5, y=2</code></pre>
+    </section>
+
+    <section id="dynamic-memory">
+      <h2>Dynamic memory with pointers (malloc/free)</h2>
+      <pre><code>// malloc_example.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    size_t n = 5;
+    int *arr = malloc(n * sizeof *arr);
+    if (!arr) { perror("malloc"); return 1; }
+    for (size_t i = 0; i &lt; n; i++) arr[i] = (int)(i * 10);
+    for (size_t i = 0; i &lt; n; i++) printf("%d ", arr[i]);
+    printf("\n");
+    free(arr); // release memory
+    return 0;
+}
+</code></pre>
+      <div class="note">Always check result of <code>malloc</code>/<code>calloc</code> and <code>free</code> every allocated block exactly once. Avoid using memory after it is freed (dangling pointer).</div>
+    </section>
+
+    <section id="function-pointers">
+      <h2>Function pointers</h2>
+      <pre><code>// func_ptr.c
+#include &lt;stdio.h&gt;
+int add(int a,int b){return a+b;} 
+int sub(int a,int b){return a-b;}
+
+int main(void){
+    int (*op)(int,int) = add;
+    printf("add: %d\n", op(4,3));
+    op = sub;
+    printf("sub: %d\n", op(4,3));
+    return 0;
+}
+</code></pre>
+      <div class="note">Function pointers are useful for callbacks, strategy tables, and decoupling code.</div>
+    </section>
+
+    <section id="const-volatile">
+      <h2>const, volatile and pointer qualifiers</h2>
+      <pre><code>const int ci = 10;
+const int *p1 = &ci;   // pointer to const int (can't modify *p1)
+int * const p2 = &x;   // const pointer to int (can't change p2)
+const int * const p3 = &ci; // both
+volatile int *pv;      // value may change outside program
+</code></pre>
+      <div class="note">Carefully place <code>const</code> to express intent: whether pointer, pointee, or both are constant.</div>
+    </section>
+
+    <section id="pitfalls">
+      <h2>Common pitfalls &amp; things to remember</h2>
+      <ul>
+        <li>Always initialize pointers; uninitialized pointers are wild and may crash.</li>
+        <li>Check for <code>NULL</code> before dereferencing pointers from functions like <code>malloc</code>.</li>
+        <li>Avoid dereferencing freed memory (dangling pointers).</li>
+        <li>Be careful with pointer arithmetic and array bounds to avoid buffer overruns.</li>
+        <li>Do not assume pointer sizes across platforms; use portable types and <code>sizeof</code>.</li>
+        <li>Casting between incompatible pointer types can break strict-aliasing rules and cause undefined behavior.</li>
+      </ul>
+    </section>
+
+    <section id="when-to-use">
+      <h2>When to use pointers</h2>
+      <ul>
+        <li>Dynamic memory management (<code>malloc</code>/<code>free</code>).</li>
+        <li>Passing large structures to functions efficiently.</li>
+        <li>Building linked data structures (linked lists, trees, graphs).</li>
+        <li>Interfacing with OS/hardware where addresses are required.</li>
+        <li>Implementing polymorphism-like patterns via function pointers.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/pointers.html</code></div>
+      <div><button class="btn" onclick="location.href='arrays-and-strings.html'">Previous</button> <button class="btn" onclick="location.href='dynamic-memory-allocation.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

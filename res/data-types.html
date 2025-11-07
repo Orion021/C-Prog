@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Data Types in C — Notes</title>
+  <meta name="description" content="Comprehensive notes on C data types: primitive, derived, and user-defined types with examples and sizeof usage." />
+  <style>
+    :root { --bg:#0b1220; --muted:#98a1b3; --accent:#60a5fa; }
+    body{margin:0;background:#071022;color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:24px;}
+    .container{max-width:900px;margin:auto;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:24px;}
+    h1{font-size:22px;margin:0 0 6px 0;}
+    p.lead{color:var(--muted);margin:0 0 18px 0;}
+    section{margin-bottom:16px;padding:14px;border:1px solid rgba(255,255,255,0.02);border-radius:10px;background:rgba(255,255,255,0.01);}
+    h2{font-size:17px;margin-top:0;}
+    p,li{color:#dce8f8;}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px;}
+    ul{margin:8px 0 8px 22px;}
+    table{width:100%;border-collapse:collapse;margin-top:8px;}
+    th,td{border:1px solid rgba(255,255,255,0.1);padding:8px;text-align:left;}
+    th{background:rgba(255,255,255,0.08);}
+    footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:8px 12px;color:var(--muted);cursor:pointer;}
+    .note{background:rgba(96,165,250,0.05);border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Data Types in C</h1>
+      <p class="lead">Learn about C’s fundamental, derived, and user-defined data types, their sizes, and examples of usage.</p>
+    </header>
+
+    <section>
+      <h2>Overview</h2>
+      <p>Every variable in C has a <strong>data type</strong>, which determines the size and type of data that can be stored in it.</p>
+      <ul>
+        <li><strong>Basic (Primitive) Data Types:</strong> int, char, float, double</li>
+        <li><strong>Derived Data Types:</strong> arrays, pointers, structures, unions</li>
+        <li><strong>User-defined Data Types:</strong> typedef, enum, struct, union</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Primitive Data Types</h2>
+      <table>
+        <thead>
+          <tr><th>Type</th><th>Size (bytes)</th><th>Range (approx.)</th><th>Format Specifier</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>char</code></td><td>1</td><td>-128 to 127</td><td>%c</td></tr>
+          <tr><td><code>unsigned char</code></td><td>1</td><td>0 to 255</td><td>%c</td></tr>
+          <tr><td><code>int</code></td><td>4</td><td>-2,147,483,648 to 2,147,483,647</td><td>%d</td></tr>
+          <tr><td><code>unsigned int</code></td><td>4</td><td>0 to 4,294,967,295</td><td>%u</td></tr>
+          <tr><td><code>short</code></td><td>2</td><td>-32,768 to 32,767</td><td>%hd</td></tr>
+          <tr><td><code>long</code></td><td>4 or 8</td><td>depends on compiler</td><td>%ld</td></tr>
+          <tr><td><code>float</code></td><td>4</td><td>~±3.4e38</td><td>%f</td></tr>
+          <tr><td><code>double</code></td><td>8</td><td>~±1.7e308</td><td>%lf</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Sizes can vary by compiler and platform; use <code>sizeof(type)</code> to check actual size on your system.</div>
+    </section>
+
+    <section>
+      <h2>Example: Printing sizes and ranges</h2>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;limits.h&gt;
+#include &lt;float.h&gt;
+
+int main(void) {
+    printf("Size of int: %zu bytes\n", sizeof(int));
+    printf("INT_MIN = %d, INT_MAX = %d\n", INT_MIN, INT_MAX);
+    printf("Size of float: %zu bytes, FLT_MAX = %e\n", sizeof(float), FLT_MAX);
+    printf("Size of double: %zu bytes, DBL_MAX = %e\n", sizeof(double), DBL_MAX);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Derived Data Types</h2>
+      <ul>
+        <li><strong>Arrays:</strong> Collection of elements of same type.</li>
+        <li><strong>Pointers:</strong> Store memory addresses.</li>
+        <li><strong>Structures:</strong> Combine variables of different types.</li>
+        <li><strong>Unions:</strong> Share memory among members.</li>
+      </ul>
+      <pre><code>// Example of an array and a pointer
+int marks[5] = {90, 80, 70, 60, 50};
+int *ptr = marks; // pointer to first element
+printf("First mark = %d\n", *ptr);
+</code></pre>
+    </section>
+
+    <section>
+      <h2>User-defined Data Types</h2>
+      <pre><code>// enum example
+enum Week { MON, TUE, WED, THU, FRI, SAT, SUN };
+
+// typedef example
+typedef unsigned long ulong;
+
+// struct example
+struct Student {
+    int id;
+    char name[20];
+};
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Type modifiers</h2>
+      <p>Modifiers alter the data type’s size and range:</p>
+      <ul>
+        <li><code>signed</code>, <code>unsigned</code></li>
+        <li><code>short</code>, <code>long</code></li>
+      </ul>
+      <pre><code>unsigned int u = 40000;
+short int s = -10;
+long double x = 3.14;
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Best Practices</h2>
+      <ul>
+        <li>Use <code>int</code> for general integer operations.</li>
+        <li>Use <code>float</code> or <code>double</code> for real numbers (prefer <code>double</code> for precision).</li>
+        <li>Use <code>unsigned</code> types only when negative values are impossible.</li>
+        <li>Always use <code>sizeof()</code> to write portable programs.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/data-types.html</code></div>
+      <div><button class="btn" onclick="location.href='variables-and-constants.html'">Previous</button> <button class="btn" onclick="location.href='input-output.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

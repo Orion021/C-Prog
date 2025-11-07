@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Introduction to C — Notes</title>
+  <meta name="description" content="Introduction to C programming: history, features, toolchain, Hello World and examples." />
+  <style>
+    :root{ --bg:#0b1220; --card:#0f1724; --muted:#98a1b3; --accent:#60a5fa; --radius:12px; }
+    html,body{height:100%; margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#06121a,#071022); color:#e6eef8}
+    .container{max-width:900px;margin:28px auto;padding:22px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.008)); border-radius:14px; border:1px solid rgba(255,255,255,0.03);}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{margin:0 0 18px 0;color:var(--muted)}
+    section{background:rgba(255,255,255,0.01); padding:14px;border-radius:10px;margin-bottom:14px;border:1px solid rgba(255,255,255,0.02)}
+    h2{font-size:16px;margin:0 0 8px 0}
+    p{margin:0 0 8px 0; color:#cfe6ff}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:8px}
+    .buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+    .note{background:linear-gradient(180deg, rgba(96,165,250,0.04), rgba(96,165,250,0.02));padding:10px;border-radius:8px;border:1px solid rgba(96,165,250,0.06);color:#dff3ff}
+    footer{margin-top:10px;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Introduction to C</h1>
+      <p class="lead">History, characteristics, when to choose C, toolchain setup, and simple complete examples.</p>
+    </header>
+
+    <section aria-labelledby="what-is-c">
+      <h2 id="what-is-c">What is C?</h2>
+      <p class="meta">Definition</p>
+      <p>C is a general-purpose, procedural programming language developed in the early 1970s by Dennis Ritchie at Bell Labs. It is a low-level language compared to modern high-level languages — offering direct access to memory through pointers, predictable performance, and a small standard library. C has influenced many later languages (C++, C#, Java, Rust, Go) and remains widely used for system software, embedded systems, and performance-critical applications.</p>
+    </section>
+
+    <section aria-labelledby="features">
+      <h2 id="features">Key characteristics / features</h2>
+      <ul>
+        <li>Procedural programming model (functions, modular code).</li>
+        <li>Low-level memory access using pointers.</li>
+        <li>Small runtime — minimal standard library.</li>
+        <li>Portable across platforms with standards (ANSI C / ISO C).</li>
+        <li>Deterministic performance; suitable for systems programming and embedded devices.</li>
+        <li>Compilation model: source (.c) &rarr; preprocess &rarr; compile &rarr; assemble &rarr; link &rarr; executable.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="when-to-use-c">
+      <h2 id="when-to-use-c">When to choose C</h2>
+      <p>Choose C when you need fine-grained control over memory, minimal runtime overhead, or are writing code for OS kernels, device drivers, embedded microcontrollers, or performance-critical libraries. For application-level rapid development or heavy standard libraries (GUI, web), higher-level languages may be more productive.</p>
+    </section>
+
+    <section aria-labelledby="toolchain">
+      <h2 id="toolchain">Toolchain & compilation</h2>
+      <p class="meta">Typical toolchain</p>
+      <ul>
+        <li>Compiler: <code>gcc</code> (GNU), <code>clang</code> (LLVM), or vendor compilers.</li>
+        <li>Build tools: <code>make</code>, <code>cmake</code>, or simple shell scripts.</li>
+        <li>Editor/IDE: VS Code, Vim, Emacs, CLion, Dev-C++ (Windows), etc.</li>
+      </ul>
+      <p>Basic compilation commands:</p>
+      <pre><code>// compile and link in one step
+gcc hello.c -o hello
+
+// compile only (produce object file hello.o)
+gcc -c hello.c -o hello.o
+
+// compile with warnings and C standard (recommended)
+gcc -std=c11 -Wall -Wextra -pedantic hello.c -o hello
+</code></pre>
+    </section>
+
+    <section aria-labelledby="hello-world">
+      <h2 id="hello-world">Hello World — complete example</h2>
+      <p class="meta">A minimal but complete C program</p>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    // print a string to standard output
+    printf("Hello, world!\n");
+    return 0; // indicate success
+}
+</code></pre>
+      <p>Save as <code>hello.c</code>, then compile and run:</p>
+      <pre><code>gcc -std=c11 -Wall -Wextra hello.c -o hello
+./hello
+</code></pre>
+    </section>
+
+    <section aria-labelledby="example-1">
+      <h2 id="example-1">Example: Simple calculator (command-line)</h2>
+      <p class="meta">Demonstrates input, basic operators, and error checking</p>
+      <pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    double a, b;
+    char op;
+
+    printf("Enter an expression (e.g. 2.5 * 4): ");
+    if (scanf("%lf %c %lf", &a, &op, &b) != 3) {
+        fprintf(stderr, "Invalid input\n");
+        return 1;
+    }
+
+    switch (op) {
+        case '+': printf("%g\n", a + b); break;
+        case '-': printf("%g\n", a - b); break;
+        case '*': printf("%g\n", a * b); break;
+        case '/':
+            if (b == 0) { fprintf(stderr, "Division by zero\n"); return 1; }
+            printf("%g\n", a / b);
+            break;
+        default:
+            fprintf(stderr, "Unknown operator: %c\n", op);
+            return 1;
+    }
+
+    return 0;
+}
+</code></pre>
+      <p class="note">Note: using <code>scanf</code> is fine for small examples, but for robust input handling prefer reading a line with <code>fgets</code> and parsing with <code>sscanf</code> or <code>strtod</code>.</p>
+    </section>
+
+    <section aria-labelledby="best-practices">
+      <h2 id="best-practices">Beginner best-practices</h2>
+      <ul>
+        <li>Compile with warnings enabled (<code>-Wall -Wextra</code>) and fix warnings early.</li>
+        <li>Initialize variables before use; uninitialized variables cause undefined behaviour.</li>
+        <li>Check results of I/O and memory allocation functions (<code>malloc</code>, <code>fopen</code>, etc.).</li>
+        <li>Prefer <code>size_t</code> for sizes/indices and <code>int</code> for small integers unless platform-specific widths are required.</li>
+        <li>Free dynamically allocated memory and avoid memory leaks.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="further-reading">
+      <h2 id="further-reading">Further reading & references</h2>
+      <ul>
+        <li>ISO/IEC 9899 C standard (C11, C17) — for language details.</li>
+        <li>"The C Programming Language" by Brian W. Kernighan and Dennis M. Ritchie (K&R).</li>
+        <li>Online resources: cppreference (C portion), GNU docs for GCC, man pages.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/introduction-to-c.html</code></div>
+      <div>Next: <button class="btn" onclick="location.href='res/structure-of-a-c-program.html'">Structure of a C Program</button></div>
+    </footer>
+  </div>
+</body>
+</html>

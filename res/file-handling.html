@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>File Handling in C — Notes</title>
+  <meta name="description" content="Detailed notes on file handling in C: fopen, fclose, fread, fwrite, fprintf, fscanf, fseek, ftell, binary vs text files, examples, and best practices." />
+  <style>
+    :root{--bg:#071022;--card:rgba(255,255,255,0.02);--muted:#98a1b3;--accent:#60a5fa}
+    body{margin:0;background:linear-gradient(180deg,#04101a,#071022);color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:20px}
+    .wrap{max-width:980px;margin:18px auto;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px 0;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 16px 0}
+    section{background:var(--card);padding:14px;border-radius:8px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.02)}
+    h2{margin:0 0 8px 0;font-size:16px}
+    p,li{color:#dce8f8}
+    ul{margin:8px 0 8px 20px}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+    .note{background:rgba(96,165,250,0.04);padding:8px;border-radius:6px;color:#dff3ff;margin-top:6px}
+    footer{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid rgba(255,255,255,0.06);padding:8px;text-align:left}
+    th{background:rgba(255,255,255,0.04)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>File Handling in C</h1>
+      <p class="lead">Learn how to read from and write to files using the standard I/O functions: <code>fopen</code>, <code>fclose</code>, <code>fread</code>, <code>fwrite</code>, <code>fprintf</code>, <code>fscanf</code>, <code>fgets</code>, <code>fputs</code>, <code>fseek</code>, and <code>ftell</code>.</p>
+    </header>
+
+    <section id="why-files">
+      <h2>Why use files?</h2>
+      <p>Files let programs store and retrieve data persistently on disk. Use files for configuration, data storage, logs, and binary data exchange.</p>
+    </section>
+
+    <section id="basic-io">
+      <h2>Opening and closing files</h2>
+      <p>Use <code>fopen()</code> to open a file and <code>fclose()</code> to close it.</p>
+      <pre><code>FILE *fp = fopen("data.txt", "r"); // open for reading
+if (fp == NULL) { perror("fopen"); return 1; }
+// ... use fp ...
+fclose(fp);
+</code></pre>
+      <p>Common modes:</p>
+      <table>
+        <thead><tr><th>Mode</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>r</code></td><td>Open for reading (file must exist)</td></tr>
+          <tr><td><code>w</code></td><td>Open for writing (truncate/create)</td></tr>
+          <tr><td><code>a</code></td><td>Open for append (create if not exists)</td></tr>
+          <tr><td><code>rb</code>, <code>wb</code>, <code>ab</code></td><td>Binary modes on platforms that differentiate text/binary (Windows)</td></tr>
+          <tr><td><code>r+</code>, <code>w+</code>, <code>a+</code></td><td>Read/update modes</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="text-io">
+      <h2>Text I/O: fprintf, fscanf, fgets, fputs</h2>
+      <pre><code>// text_io.c
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    FILE *fp = fopen("notes.txt", "w");
+    if (!fp) return 1;
+    fprintf(fp, "Hello %s\n", "world");
+    fclose(fp);
+
+    fp = fopen("notes.txt", "r");
+    if (!fp) return 1;
+    char buf[100];
+    if (fgets(buf, sizeof(buf), fp)) {
+        printf("Read: %s", buf);
+    }
+    fclose(fp);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong> (program prints):</p>
+      <pre><code>Read: Hello world</code></pre>
+      <div class="note"><code>fgets()</code> is safer than <code>gets()</code>; it reads at most n-1 characters and includes the newline if present.</div>
+    </section>
+
+    <section id="binary-io">
+      <h2>Binary I/O: fread and fwrite</h2>
+      <p>Use binary I/O to read/write raw memory representations (e.g. structs, images).</p>
+      <pre><code>// binary_io.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    int arr[5] = {1,2,3,4,5};
+    FILE *fp = fopen("data.bin", "wb");
+    if (!fp) return 1;
+    fwrite(arr, sizeof(int), 5, fp);
+    fclose(fp);
+
+    int buf[5] = {0};
+    fp = fopen("data.bin", "rb");
+    if (!fp) return 1;
+    fread(buf, sizeof(int), 5, fp);
+    for (int i = 0; i < 5; i++) printf("%d ", buf[i]);
+    printf("\n");
+    fclose(fp);
+    return 0;
+}
+</code></pre>
+      <p><strong>Output</strong>:</p>
+      <pre><code>1 2 3 4 5</code></pre>
+      <div class="note">Binary files are not portable between systems with different endianness or different sizes for primitive types unless handled explicitly.</div>
+    </section>
+
+    <section id="file-position">
+      <h2>File position: fseek, ftell, rewind</h2>
+      <pre><code>// fseek_ftell.c
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    FILE *fp = fopen("notes.txt", "r");
+    if (!fp) return 1;
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    printf("File size = %ld bytes\n", size);
+    rewind(fp); // go back to start
+    fclose(fp);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="error-handling">
+      <h2>Error handling and return values</h2>
+      <ul>
+        <li>Check if <code>fopen()</code> returns <code>NULL</code>.</li>
+        <li><code>fread()</code> and <code>fwrite()</code> return number of items read/written; check it.</li>
+        <li>Use <code>feof()</code> and <code>ferror()</code> to detect end-of-file and errors.</li>
+      </ul>
+      <pre><code>if (fwrite(...) != items_to_write) { perror("write"); }
+if (fread(...) != items_to_read) { if (feof(fp)) handle_eof(); else if (ferror(fp)) handle_error(); }
+</code></pre>
+    </section>
+
+    <section id="text-vs-binary">
+      <h2>Text vs Binary files</h2>
+      <ul>
+        <li><strong>Text files</strong> store human-readable characters with platform-specific line endings (\n on Unix, \r\n on Windows).</li>
+        <li><strong>Binary files</strong> store raw bytes; better for compact storage and preserving exact representations.</li>
+        <li>Use appropriate mode (<code>"rb"</code> / <code>"wb"</code>) when portability across platforms matters.</li>
+      </ul>
+    </section>
+
+    <section id="example-copy-file">
+      <h2>Example: Copy file (text or binary)</h2>
+      <pre><code>// copy_file.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(int argc, char *argv[]) {
+    if (argc != 3) { fprintf(stderr, "Usage: %s src dst\n", argv[0]); return 1; }
+    FILE *in = fopen(argv[1], "rb");
+    if (!in) { perror("open src"); return 1; }
+    FILE *out = fopen(argv[2], "wb");
+    if (!out) { perror("open dst"); fclose(in); return 1; }
+
+    char buf[4096];
+    size_t n;
+    while ((n = fread(buf, 1, sizeof buf, in)) > 0) {
+        if (fwrite(buf, 1, n, out) != n) { perror("write"); fclose(in); fclose(out); return 1; }
+    }
+
+    if (ferror(in)) { perror("read"); }
+    fclose(in); fclose(out);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section id="things-to-remember">
+      <h2>Things to remember</h2>
+      <ul>
+        <li>Always close files with <code>fclose()</code> to flush buffers.</li>
+        <li>Check return values of file I/O functions for robust programs.</li>
+        <li>Avoid using <code>fprintf</code>/<code>fscanf</code> for untrusted input — parsing can fail; prefer safer parsing.</li>
+        <li>When reading lines, prefer <code>fgets()</code> over <code>fscanf("%s")</code> to prevent buffer overflow.</li>
+        <li>Be mindful of text/binary differences when transferring files between platforms.</li>
+      </ul>
+    </section>
+
+    <section id="when-to-use">
+      <h2>When to use file I/O</h2>
+      <ul>
+        <li>Store program state or user data between runs.</li>
+        <li>Write logs or reports.</li>
+        <li>Exchange structured binary data with other programs.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/file-handling.html</code></div>
+      <div><button class="btn" onclick="location.href='structures-and-unions.html'">Previous</button> <button class="btn" onclick="location.href='preprocessor-and-macros.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

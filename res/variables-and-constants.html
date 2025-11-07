@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Variables and Constants — Notes</title>
+  <meta name="description" content="Explains variables and constants in C with examples, rules, scope, and best practices." />
+  <style>
+    :root { --bg:#0b1220; --muted:#98a1b3; --accent:#60a5fa; }
+    body{margin:0;background:#071022;color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:24px;}
+    .container{max-width:900px;margin:auto;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:24px;}
+    h1{font-size:22px;margin:0 0 6px 0;}
+    p.lead{color:var(--muted);margin:0 0 18px 0;}
+    section{margin-bottom:16px;padding:14px;border:1px solid rgba(255,255,255,0.02);border-radius:10px;background:rgba(255,255,255,0.01);}
+    h2{font-size:17px;margin-top:0;}
+    p,li{color:#dce8f8;}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px;}
+    ul{margin:8px 0 8px 22px;}
+    footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:8px 12px;color:var(--muted);cursor:pointer;}
+    .note{background:rgba(96,165,250,0.05);border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Variables and Constants</h1>
+      <p class="lead">Learn what variables and constants are in C, how to declare and use them, and understand their rules, scope, and lifetime.</p>
+    </header>
+
+    <section>
+      <h2>What are Variables?</h2>
+      <p>A <strong>variable</strong> is a named location in memory that stores data. Its value can change during program execution.</p>
+      <pre><code>int age = 24;      // integer variable
+float height = 1.74; // floating point variable
+char grade = 'A';   // character variable
+</code></pre>
+      <div class="note">Variables must be declared before use, specifying their data type and optionally an initial value.</div>
+    </section>
+
+    <section>
+      <h2>Rules for naming variables</h2>
+      <ul>
+        <li>Can contain letters, digits, and underscore (<code>_</code>).</li>
+        <li>Must begin with a letter or underscore (not a digit).</li>
+        <li>C is case-sensitive (<code>Score</code> and <code>score</code> are different).</li>
+        <li>No spaces or special symbols allowed.</li>
+        <li>Should not be a C keyword (e.g., <code>int</code>, <code>return</code>).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Variable declaration and initialization</h2>
+      <p>Variables can be declared and initialized in several ways:</p>
+      <pre><code>int a;          // declaration only
+int b = 10;     // declaration + initialization
+int x = 5, y = 7, z = 9; // multiple declarations
+</code></pre>
+      <p>Uninitialized variables may contain <strong>garbage values</strong> and cause undefined behavior if used before assignment.</p>
+    </section>
+
+    <section>
+      <h2>Types of variables based on scope</h2>
+      <ul>
+        <li><strong>Local variables:</strong> Declared inside a function/block, accessible only within it.</li>
+        <li><strong>Global variables:</strong> Declared outside functions, accessible throughout the program.</li>
+        <li><strong>Static variables:</strong> Retain their value between function calls.</li>
+      </ul>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int g = 10; // global variable
+
+void func() {
+    static int count = 0; // static variable
+    int local = 5;        // local variable
+    count++;
+    printf("g=%d, count=%d, local=%d\n", g, count, local);
+}
+
+int main(void) {
+    func();
+    func();
+    return 0;
+}
+</code></pre>
+      <p><em>Output:</em>
+      <pre><code>g=10, count=1, local=5
+g=10, count=2, local=5</code></pre>
+      <div class="note">Static variables preserve their value between calls, while local variables are reinitialized every call.</div>
+    </section>
+
+    <section>
+      <h2>Constants</h2>
+      <p>A <strong>constant</strong> is a fixed value that does not change during program execution.</p>
+      <pre><code>const float PI = 3.14159; // named constant
+#define MAX 100            // symbolic constant using macro
+</code></pre>
+      <p>Constants improve code readability and maintainability. You can’t assign to them after declaration.</p>
+    </section>
+
+    <section>
+      <h2>Literals in C</h2>
+      <ul>
+        <li><strong>Integer literals:</strong> e.g. <code>10</code>, <code>0xA</code>, <code>075</code>.</li>
+        <li><strong>Floating literals:</strong> e.g. <code>3.14</code>, <code>2.5e-3</code>.</li>
+        <li><strong>Character literals:</strong> e.g. <code>'A'</code>, <code>'\n'</code>.</li>
+        <li><strong>String literals:</strong> e.g. <code>"Hello"</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Example program: Area of a circle</h2>
+      <pre><code>#include &lt;stdio.h&gt;
+#define PI 3.14159
+
+int main(void) {
+    float radius, area;
+    printf("Enter radius: ");
+    scanf("%f", &radius);
+    area = PI * radius * radius;
+    printf("Area = %.2f\n", area);
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Best practices</h2>
+      <ul>
+        <li>Use descriptive names like <code>totalMarks</code> instead of <code>tm</code>.</li>
+        <li>Initialize variables as you declare them.</li>
+        <li>Use <code>const</code> or <code>#define</code> for values that shouldn’t change.</li>
+        <li>Keep variable scope as small as possible to avoid confusion.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/variables-and-constants.html</code></div>
+      <div><button class="btn" onclick="location.href='structure-of-a-c-program.html'">Previous</button> <button class="btn" onclick="location.href='data-types.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>

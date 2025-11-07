@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Input and Output in C — Notes</title>
+  <meta name="description" content="Detailed explanation of input and output functions in C: printf, scanf, getchar, putchar, gets, puts with examples." />
+  <style>
+    :root { --bg:#0b1220; --muted:#98a1b3; --accent:#60a5fa; }
+    body{margin:0;background:#071022;color:#e6eef8;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;padding:24px;}
+    .container{max-width:900px;margin:auto;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:24px;}
+    h1{font-size:22px;margin:0 0 6px 0;}
+    p.lead{color:var(--muted);margin:0 0 18px 0;}
+    section{margin-bottom:16px;padding:14px;border:1px solid rgba(255,255,255,0.02);border-radius:10px;background:rgba(255,255,255,0.01);}
+    h2{font-size:17px;margin-top:0;}
+    p,li{color:#dce8f8;}
+    pre{background:#071428;padding:12px;border-radius:8px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    code{font-family:ui-monospace,Menlo,monospace;font-size:13px;}
+    ul{margin:8px 0 8px 22px;}
+    footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:8px 12px;color:var(--muted);cursor:pointer;}
+    .note{background:rgba(96,165,250,0.05);border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Input and Output in C</h1>
+      <p class="lead">Learn about standard input and output functions such as printf, scanf, getchar, putchar, gets, and puts with examples and best practices.</p>
+    </header>
+
+    <section>
+      <h2>Introduction</h2>
+      <p>The C Standard Library provides functions for performing input and output operations through <code>stdio.h</code>. The most common functions are <code>printf()</code> and <code>scanf()</code> for formatted I/O.</p>
+    </section>
+
+    <section>
+      <h2>printf() — Output function</h2>
+      <p><code>printf()</code> is used to display formatted output to the standard output (usually the screen).</p>
+      <pre><code>#include &lt;stdio.h&gt;
+int main(void) {
+    int age = 24;
+    float height = 1.74;
+    printf("Age: %d years\n", age);
+    printf("Height: %.2f meters\n", height);
+    return 0;
+}
+</code></pre>
+      <ul>
+        <li><strong>%d</strong> – integer</li>
+        <li><strong>%f</strong> – float</li>
+        <li><strong>%c</strong> – character</li>
+        <li><strong>%s</strong> – string</li>
+        <li><strong>%.2f</strong> – float with 2 decimal precision</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>scanf() — Input function</h2>
+      <p><code>scanf()</code> reads formatted input from the user through standard input (keyboard).</p>
+      <pre><code>#include &lt;stdio.h&gt;
+int main(void) {
+    int age;
+    float height;
+    printf("Enter your age and height: ");
+    scanf("%d %f", &age, &height);
+    printf("You entered: Age=%d, Height=%.2f\n", age, height);
+    return 0;
+}
+</code></pre>
+      <div class="note">Always use the address-of operator (<code>&amp;</code>) before variable names in <code>scanf()</code> (except for strings).</div>
+    </section>
+
+    <section>
+      <h2>Common Format Specifiers</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr><th style="border:1px solid rgba(255,255,255,0.1);padding:6px;">Specifier</th><th style="border:1px solid rgba(255,255,255,0.1);padding:6px;">Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">%d</td><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">Integer</td></tr>
+          <tr><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">%f</td><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">Float</td></tr>
+          <tr><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">%c</td><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">Character</td></tr>
+          <tr><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">%s</td><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">String</td></tr>
+          <tr><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">%lf</td><td style="border:1px solid rgba(255,255,255,0.1);padding:6px;">Double</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Character I/O: getchar() and putchar()</h2>
+      <pre><code>#include &lt;stdio.h&gt;
+int main(void) {
+    char ch;
+    printf("Enter a character: ");
+    ch = getchar();  // reads a single character
+    printf("You entered: ");
+    putchar(ch);     // prints the character
+    putchar('\n');
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>String I/O: gets() and puts()</h2>
+      <pre><code>#include &lt;stdio.h&gt;
+int main(void) {
+    char name[50];
+    printf("Enter your name: ");
+    fgets(name, sizeof(name), stdin); // safer than gets()
+    printf("Hello, ");
+    puts(name);
+    return 0;
+}
+</code></pre>
+      <div class="note">Avoid using <code>gets()</code> as it is unsafe and removed from modern C standards. Use <code>fgets()</code> instead.</div>
+    </section>
+
+    <section>
+      <h2>Example: Basic Calculator using scanf and printf</h2>
+      <pre><code>#include &lt;stdio.h&gt;
+int main(void) {
+    double a, b;
+    char op;
+    printf("Enter expression (e.g. 5 + 3): ");
+    scanf("%lf %c %lf", &a, &op, &b);
+
+    switch (op) {
+        case '+': printf("%.2f\n", a + b); break;
+        case '-': printf("%.2f\n", a - b); break;
+        case '*': printf("%.2f\n", a * b); break;
+        case '/':
+            if (b != 0) printf("%.2f\n", a / b);
+            else printf("Error: Division by zero\n");
+            break;
+        default: printf("Invalid operator!\n");
+    }
+    return 0;
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Best Practices</h2>
+      <ul>
+        <li>Always match format specifiers with correct data types.</li>
+        <li>Use <code>fgets()</code> for string input to avoid buffer overflow.</li>
+        <li>Check return values of <code>scanf()</code> and <code>printf()</code> for robust error handling.</li>
+        <li>Print clear prompts before input.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>File: <code>res/input-output.html</code></div>
+      <div><button class="btn" onclick="location.href='data-types.html'">Previous</button> <button class="btn" onclick="location.href='operators-and-expressions.html'">Next</button></div>
+    </footer>
+  </div>
+</body>
+</html>
